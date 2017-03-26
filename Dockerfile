@@ -1,7 +1,8 @@
 FROM hoverbear/archlinux
 MAINTAINER Thomas Oster <mail@thomas-oster.de>
 
-RUN pacman -Syu --noconfirm \
+RUN pacman-key --refresh-keys \
+    && pacman -Sy --noconfirm archlinux-keyring \
     && pacman -S --noconfirm --needed jdk7-openjdk git apache-ant zip make base-devel inkscape sudo potrace
 COPY checkinstall-1.6.2-3-x86_64.pkg.tar.xz \
      nsis-2.46-4-x86_64.pkg.tar.xz \
