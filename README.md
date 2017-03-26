@@ -13,4 +13,6 @@ and get all the latest development snapshot from github compiled and packaged fo
  * `/app/output/branch-$BRANCH` is where binaries for the current branch are stored
 
 ## Environment Variables
- * VISICUT_REPO: URL or Path (must be mounted as volume if it's a path) to a VisiCut Git Repository. Default: https://github.com/t-oster/VisiCut.git
+ * `VISICUT_REPO`: URL or Path (must be mounted as volume if it's a path) to a VisiCut Git Repository. Default: https://github.com/t-oster/VisiCut.git
+ * `VISICUT_UPDATE`: do a checkout, clean and pull of VISICUT_BRANCH before build.
+ * `VISICUT_BRANCH`: Branch to be checked out and pulled if VISICUT_UPDATE == true

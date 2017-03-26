@@ -6,18 +6,24 @@ BASEDIR="/app"
 REPODIR="$BASEDIR/build/VisiCut"
 VISICUT_REPO=${VISICUT_REPO:-https://github.com/t-oster/VisiCut.git}
 VISICUT_BRANCH=${VISICUT_BRANCH:-develop}
+VISICUT_UPDATE=${VISICUT_UPDATE:-true}
 if [ ! -d "$REPODIR" ]
 then
     git clone --recursive "$VISICUT_REPO" "$REPODIR"
 fi
 cd $REPODIR
-git checkout -f $VISICUT_BRANCH
-git reset --hard
-git pull
-# Build the latest GIT-Revision
-# git submodule init
-git submodule update || exit 1
-git fetch --tags
+if [ "$VISICUT_UPDATE" == "true" ]
+then
+    git checkout -f $VISICUT_BRANCH
+    git reset --hard
+    git pull
+    # Build the latest GIT-Revision
+    # git submodule init
+    git submodule update || exit 1
+    git fetch --tags
+else
+    echo "Skipping update due to VISICUT_UPDATE environment variable"
+fi
 VERSION="$(git describe --tags)"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 echo "branch is $BRANCH"
