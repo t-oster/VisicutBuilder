@@ -4,12 +4,14 @@ echo "$(date) Build started."
 TIME=$(date +%s)
 BASEDIR="/app"
 REPODIR="$BASEDIR/build/VisiCut"
-VISICUT_REPO=${VARIABLE:-https://github.com/t-oster/VisiCut.git}
+VISICUT_REPO=${VISICUT_REPO:-https://github.com/t-oster/VisiCut.git}
+VISICUT_BRANCH=${VISICUT_BRANCH:-develop}
 if [ ! -d "$REPODIR" ]
 then
     git clone --recursive "$VISICUT_REPO" "$REPODIR"
 fi
 cd $REPODIR
+git checkout -f $VISICUT_BRANCH
 git reset --hard
 git pull
 # Build the latest GIT-Revision
