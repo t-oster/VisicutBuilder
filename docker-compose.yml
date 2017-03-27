@@ -1,4 +1,4 @@
 buildservice:
   build: .
   volumes:
-   - /data/download.visicut.org:/app/output
+   - ./output:/app/output
