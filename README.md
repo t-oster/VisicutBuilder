@@ -1,7 +1,17 @@
 # VisicutBuilder
 A Docker container, which builds the latest VisiCut version for all platforms
 
-this is a work in progress. In theory you should be able to run
+If you just want to build VisiCut, you can use the prebuild docker-image from https://gitlab.com/t-oster/visicutbuildservice/container_registry.
+
+In order to get the latest biaries you can just run
+
+`docker run -v /tmp/output:/app/output registry.gitlab.com/t-oster/visicutbuildservice`
+
+If you have yourself a VisiCut Source-Tree checked out at /home/foo/VisiCut you can build it with:
+
+`docker run -v /home/foo/VisiCutBuild:/app/output -v /home/foo/VisiCut:/app/build/VisiCut -e VISICUT_UPDATE=false registry.gitlab.com/t-oster/visicutbuildservice`
+
+You can also clone this repository and just run
 `docker-compose up`
 
 and get all the latest development snapshot from github compiled and packaged for every platform
