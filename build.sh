@@ -1,8 +1,9 @@
 #!/bin/bash
-/usr/bin/login -f root
+set -e
 echo "$(date) Build started."
 TIME=$(date +%s)
 BASEDIR="/app"
+mkdir -p $BASEDIR/build $BASEDIR/output
 REPODIR="$BASEDIR/build/VisiCut"
 VISICUT_REPO=${VISICUT_REPO:-https://github.com/t-oster/VisiCut.git}
 VISICUT_BRANCH=${VISICUT_BRANCH:-develop}

@@ -1,26 +1,45 @@
-FROM hoverbear/archlinux
+FROM ubuntu:18.04
 MAINTAINER Thomas Oster <mail@thomas-oster.de>
+RUN apt-get update
+# VisiCut build dependencies:
+RUN apt-get -y install --no-install-recommends checkinstall nsis openjdk-8-jdk ant ant-optional zip librsvg2-bin git potrace fakeroot
 
-COPY checkinstall-1.6.2-3-x86_64.pkg.tar.xz \
-     nsis-2.46-4-x86_64.pkg.tar.xz \
-     mingw32-runtime-3.20-4-any.pkg.tar.xz \
-     dpkg-1.16.10-2-x86_64.pkg.tar.xz \ 
-    /tmp/
-RUN pacman-key --refresh-keys \
-    && pacman -Sy --noconfirm archlinux-keyring
-    
-RUN pacman -S --noconfirm --needed jdk7-openjdk git apache-ant zip base-devel librsvg sudo potrace \
-    && pacman -U --noconfirm /tmp/*.pkg.tar.xz \
-    && pacman -Scc --noconfirm \
-    && rm -rf /tmp/*.pkg.tar.xz \
-    && useradd docker \
-    && echo "docker ALL=NOPASSWD(ALL) ALL" >> /etc/sudoers \
-    && mkdir /app \
-    && mkdir /app/output \
-    && mkdir /app/build \
-    && chown docker /app -R
+# Build Arch's pacman on Ubuntu:
+# (It is  one of the few things on earth for which there is no Debian/Ubuntu package.)
+RUN apt-get -y install --no-install-recommends libarchive-dev bsdtar build-essential autogen autoconf autoconf-archive autopoint automake libtool gettext
+RUN git clone --quiet --branch v5.0.2 --depth 1 git://projects.archlinux.org/pacman.git /tmp/pacman
+WORKDIR /tmp/pacman
+RUN apt-get -y install pkg-config
+RUN ./autogen.sh
+# for some strange reason, we have to explicitly add libarchive here:
+RUN ./configure --disable-doc LDFLAGS="-larchive"
+# to debug the make process: RUN VERBOSE=1 make
+RUN make
+RUN make install
+# export library path
+ENV LD_LIBRARY_PATH=/usr/local/lib
+WORKDIR /
+RUN rm -r /tmp/pacman
+# initialize pacman DB by querying something
+RUN pacman -Q fooo 2>/dev/null || true
+RUN echo PKGEXT=.pkg.tar.xz >> /usr/local/etc/makepkg.conf
+
+# to make `makepkg` happy, add a fake Arch Linux package that provides the dependencies we have installed
+ADD fake-arch-packages /tmp/fake-arch-packages
+WORKDIR /tmp/fake-arch-packages
+RUN chown nobody .
+USER nobody
+RUN makepkg
+USER root
+RUN pacman --noconfirm -U *.pkg.*
+
+RUN adduser docker --system --uid 12345
+ADD build.sh /app/
+ADD mac-addons /app/mac-addons
+ADD windows-addons /app/windows-addons
+RUN mkdir -p /app/output /app/build
+RUN chown docker /app/output /app/build
 USER docker
-ADD build.sh mac-addons windows-addons /app/
 VOLUME ["/app/output", "/app/build"]
 WORKDIR /app
 CMD ./build.sh
