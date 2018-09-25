@@ -6,7 +6,7 @@ BASEDIR="/app"
 mkdir -p $BASEDIR/build $BASEDIR/output
 REPODIR="$BASEDIR/build/VisiCut"
 VISICUT_REPO=${VISICUT_REPO:-https://github.com/t-oster/VisiCut.git}
-VISICUT_BRANCH=${VISICUT_BRANCH:-develop}
+VISICUT_BRANCH=${VISICUT_BRANCH:-master}
 VISICUT_UPDATE=${VISICUT_UPDATE:-true}
 if [ ! -d "$REPODIR" ]
 then
@@ -55,10 +55,12 @@ done
 popd
 echo "Compiling LibLaserCut"
 pushd $REPODIR/lib/LibLaserCut
+ant clean || exit 1
 ant jar || exit 1
 popd
 echo "Compiling"
 pushd $REPODIR
+ant clean || exit 1
 make || exit 1
 popd
 
