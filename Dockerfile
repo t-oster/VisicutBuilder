@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 MAINTAINER Thomas Oster <mail@thomas-oster.de>
 RUN apt-get update && \
 # VisiCut build dependencies:
-	apt-get -y install --no-install-recommends checkinstall nsis openjdk-8-jdk ant ant-optional zip librsvg2-bin git potrace fakeroot && \
+	apt-get -y install --no-install-recommends wget checkinstall nsis openjdk-8-jdk ant ant-optional zip librsvg2-bin git potrace fakeroot && \
 # Build Arch's pacman on Ubuntu:
 # (It is  one of the few things on earth for which there is no Debian/Ubuntu package.)
 	apt-get -y install --no-install-recommends libarchive-dev bsdtar build-essential autogen autoconf autoconf-archive autopoint automake libtool gettext pkg-config
