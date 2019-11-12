@@ -45,7 +45,7 @@ mkdir -p $REPODIR/distribute/mac/VisiCut.app/Contents/Resources/Java
 cp -r $BASEDIR/mac-addons/* $REPODIR/distribute/mac/VisiCut.app/Contents/Resources/Java/
 
 echo "Inserting Version Number"
-pushd $REPODIR/src/com/t_oster/visicut/gui/resources/
+pushd $REPODIR/src/main/resources/de/thomas_oster/visicut/gui/resources/
 for i in VisicutApp*.properties
 do
 	cp $i /tmp/$i
@@ -53,14 +53,9 @@ do
 	rm /tmp/$i
 done
 popd
-echo "Compiling LibLaserCut"
-pushd $REPODIR/lib/LibLaserCut
-ant clean || exit 1
-ant jar || exit 1
-popd
 echo "Compiling"
 pushd $REPODIR
-ant clean || exit 1
+make clean || exit 1
 make || exit 1
 popd
 
