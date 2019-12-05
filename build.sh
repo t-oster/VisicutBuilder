@@ -49,7 +49,7 @@ pushd $REPODIR/src/main/resources/de/thomas_oster/visicut/gui/resources/
 for i in VisicutApp*.properties
 do
 	cp $i /tmp/$i
-	cat /tmp/$i|sed "s#version = .*#version = $VERSION#g#" > $i
+	cat /tmp/$i|sed "s#^Application.version =.*#Application.version = $VERSION#g#" > $i
 	rm /tmp/$i
 done
 popd
