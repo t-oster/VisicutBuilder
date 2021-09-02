@@ -3,4 +3,4 @@ pkgver=9.99
 pkgrel=1
 pkgdesc="Fake package to satisfy dependencies"
 arch=('x86_64')
-provides=('java-environment' 'bash' 'potrace' 'git' 'apache-ant') 
+provides=('java-environment' 'bash' 'potrace' 'git' 'apache-ant' 'jre11-openjdk' 'maven' 'jdk11-openjdk')
