@@ -6,7 +6,7 @@ RUN apt-get update && \
 # Build Arch's pacman on Ubuntu:
 # (It is  one of the few things on earth for which there is no Debian/Ubuntu package.)
 	apt-get -y install --no-install-recommends libarchive-dev bsdtar build-essential autogen autoconf autoconf-archive autopoint automake libtool gettext pkg-config
-RUN git clone --quiet --branch v5.0.2 --depth 1 git://projects.archlinux.org/pacman.git /tmp/pacman && \
+RUN git clone --quiet --branch v5.0.2 --depth 1 https://gitlab.archlinux.org/pacman/pacman.git /tmp/pacman && \
 	cd /tmp/pacman && \
 	./autogen.sh && \
 # for some strange reason, we have to explicitly add libarchive here:
