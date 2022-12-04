@@ -17,7 +17,7 @@ if [ "$VISICUT_UPDATE" == "true" ]
 then
     git checkout -f $VISICUT_BRANCH
     git reset --hard
-    git pull
+    git pull --ff-only
     # Build the latest GIT-Revision
     # git submodule init
     git submodule update || exit 1
