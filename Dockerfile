@@ -33,12 +33,12 @@ RUN cd /tmp/fake-arch-packages && \
 
 RUN adduser docker --system --uid 12345
 ADD build.sh /app/
+ADD docker_cmd.sh /app/
 ADD mac-addons /app/mac-addons
 ADD windows-addons /app/windows-addons
 RUN mkdir -p /app/output /app/build && \
 	chown docker /app/output /app/build
-USER docker
 VOLUME ["/app/output", "/app/build"]
 WORKDIR /app
-CMD ./build.sh
+CMD ./docker_cmd.sh
 
