@@ -1,11 +1,12 @@
-FROM ubuntu:18.04
+FROM debian:bullseye
+# Note: Debian bullseye is from ca. 2021. Ubuntu 22 is unusable due to bugs. Ubuntu 18 is too old for the "Noto Sans light" font.
 MAINTAINER Thomas Oster <mail@thomas-oster.de>
 RUN apt-get update && \
 # VisiCut build dependencies:
-	apt-get -y install --no-install-recommends wget checkinstall nsis openjdk-11-jdk maven zip unzip librsvg2-bin git potrace fakeroot && \
+	apt-get -y install --no-install-recommends wget checkinstall nsis openjdk-11-jdk maven zip unzip librsvg2-bin git potrace fakeroot fonts-noto-extra sudo && \
 # Build Arch's pacman on Ubuntu:
 # (It is  one of the few things on earth for which there is no Debian/Ubuntu package.)
-	apt-get -y install --no-install-recommends libarchive-dev bsdtar build-essential autogen autoconf autoconf-archive autopoint automake libtool gettext pkg-config
+	apt-get -y install --no-install-recommends libarchive-dev libarchive-tools build-essential autogen autoconf autoconf-archive autopoint automake libtool gettext pkg-config
 RUN git clone --quiet --branch v5.0.2 --depth 1 https://gitlab.archlinux.org/pacman/pacman.git /tmp/pacman && \
 	cd /tmp/pacman && \
 	./autogen.sh && \
@@ -20,7 +21,8 @@ RUN git clone --quiet --branch v5.0.2 --depth 1 https://gitlab.archlinux.org/pac
 	echo PKGEXT=.pkg.tar.xz >> /usr/local/etc/makepkg.conf
 # export library path
 ENV LD_LIBRARY_PATH=/usr/local/lib
-
+# workaround nsis bug: https://sourceforge.net/p/nsis/bugs/1180/
+ENV LANG C.UTF-8
 
 # to make `makepkg` happy, add a fake Arch Linux package that provides the dependencies we have installed
 ADD fake-arch-packages /tmp/fake-arch-packages
