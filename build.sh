@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 echo "$(date) Build started."
 TIME=$(date +%s)
 BASEDIR="/app"
@@ -61,7 +61,14 @@ popd
 
 echo "Distributing"
 pushd $REPODIR/distribute
-echo -en "y\ny\ny\ny\n" | ./distribute.sh --nocompile || exit 1
+export NO_BUILD=1
+sed -i "s/set \-e/set \-ex/g" distribute.sh
+./distribute.sh zip 2>&1
+./distribute.sh windows-nsis
+./distribute.sh linux-checkinstall
+./distribute.sh macos-bundle
+ls
+# Note: There is no official Arch build anymore, please build it yourself from AUR.
 popd
 mkdir -p $OUTDIR/ArchLinux
 mkdir -p $OUTDIR/MacOSX
@@ -69,13 +76,10 @@ mkdir -p $OUTDIR/All
 mkdir -p $OUTDIR/Windows
 mkdir -p $OUTDIR/Debian-Ubuntu-Mint
 echo "Moving results to VisiCutNightly..."
-mv $REPODIR/distribute/*.pkg.tar.xz $OUTDIR/ArchLinux/ || exit 1
-mv $REPODIR/distribute/*Mac*.zip $OUTDIR/MacOSX/ || exit 1
-# delete windows zip
-rm $REPODIR/distribute/*-Windows-Installer.zip
-mv $REPODIR/distribute/*.zip $OUTDIR/All/ || exit 1
-mv $REPODIR/distribute/*.exe $OUTDIR/Windows/ || exit 1
-mv $REPODIR/distribute/*.deb $OUTDIR/Debian-Ubuntu-Mint/ || exit 1
+mv -v $REPODIR/distribute/*Mac*.zip $OUTDIR/MacOSX/ || exit 1
+mv -v $REPODIR/distribute/*.zip $OUTDIR/All/ || exit 1
+mv -v $REPODIR/distribute/*.exe $OUTDIR/Windows/ || exit 1
+mv -v $REPODIR/distribute/*.deb $OUTDIR/Debian-Ubuntu-Mint/ || exit 1
 echo "done."
 (( k=$(date +%s) - TIME ))
 echo "Build took $k seconds."
@@ -90,3 +94,4 @@ do
 	done
 	popd
 done
+echo "Success! All done."
